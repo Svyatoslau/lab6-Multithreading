@@ -2,6 +2,7 @@ package bsu.rfe.java.group10.lab6.Yaroshevich.varC2;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.util.Date;
 
 public class BouncingBall implements Runnable {
 
@@ -14,7 +15,7 @@ public class BouncingBall implements Runnable {
     private Field field;
     private int radius;
     private Color color;
-
+    float time =  new Date().getTime()%1000000;
     // текущие координаты мяча
     private double x;
     private double y;
@@ -94,12 +95,22 @@ public class BouncingBall implements Runnable {
                 // Если движении разрешено - управление будет возвращено
                 // В противном случае - активный поток заснёт
                 field.canMove(this);
+
                 Point speedV = new Point(field.intersectionSpeed(this));
-                if(speedV.getX()!=0 && speedV.getY()!=0){
+                boolean flag =false;
+                System.out.println(new Date().getTime()%1000000 - time);
+                if(speedV.getX()!=0 && speedV.getY()!=0 && new Date().getTime()%1000000 - time>500){
                     double gipot = Math.sqrt(Math.pow(speedV.getX(),2)+Math.pow(speedV.getY(),2));
-                    speedX=3*speedV.getX()/gipot;
-                    speedY=3*speedV.getY()/gipot;
+                    double cos = speedV.getX()/gipot;
+                    double sin = speedV.getY()/gipot;
+                    if(Math.abs(cos)>0.8) cos = 0.8;
+                    if(Math.abs(sin)<0.2) sin =0.2;
+                    speedX=3*cos;
+                    speedY=3*sin;
                     speed=(int)Math.sqrt(Math.pow(speedV.getX()/speedX,2)+Math.pow(speedV.getY()/speedY,2)/2);
+                    flag=true;
+                    System.out.println(time-new Date().getTime()%100000);
+                    time=new Date().getTime()%100000;
                 }
                 if(speed>15) speed=15;
                 if(x + speedX <= radius){
@@ -119,6 +130,10 @@ public class BouncingBall implements Runnable {
                     speedY = - speedY;
                     y = new Double(field.getHeight()-radius).intValue();
                 }else {
+                    if(flag){
+                        x += speedX;
+                        y += speedY;
+                    }
                     x += speedX;
                     y += speedY;
                 }

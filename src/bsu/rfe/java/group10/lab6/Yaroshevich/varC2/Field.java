@@ -69,7 +69,7 @@ public class Field  extends JPanel {
             if(i==indexOfCurrentBall) continue;
             BouncingBall ball2= balls.get(i);
             double length = Math.sqrt(Math.pow(ball1.getX()-ball2.getX(),2)+Math.pow(ball1.getY()-ball2.getY(),2));
-            if( ball1.getRadius()+ball2.getRadius() >= length){
+            if( ball1.getRadius()+ball2.getRadius() >= length-5 && ball1.getRadius()+ball2.getRadius() <= length+5){
                 double kof=((ball1.getX()-ball2.getX())*(ball2.getSpeed()*ball2.getSpeedX() - ball1.getSpeed()*ball1.getSpeedX())
                         +(ball1.getY()-ball2.getY())*(ball2.getSpeed()*ball2.getSpeedY() - ball1.getSpeed()*ball1.getSpeedY()))
                         *(2*Math.pow(ball2.getRadius(),2))/(Math.pow(ball1.getRadius(),2)+Math.pow(ball2.getRadius(),2))
