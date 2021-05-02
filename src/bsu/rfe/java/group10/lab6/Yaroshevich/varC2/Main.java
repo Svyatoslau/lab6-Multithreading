@@ -1,4 +1,4 @@
-package com.company;
+package bsu.rfe.java.group10.lab6.Yaroshevich.varC2;
 
 import javax.swing.*;
 

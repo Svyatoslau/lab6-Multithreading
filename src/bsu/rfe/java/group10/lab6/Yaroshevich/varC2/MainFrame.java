@@ -1,4 +1,4 @@
-package com.company;
+package bsu.rfe.java.group10.lab6.Yaroshevich.varC2;
 
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.tools.Tool;
 
 @SuppressWarnings("serial")
 public class MainFrame  extends JFrame {
