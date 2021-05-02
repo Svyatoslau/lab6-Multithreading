@@ -1,8 +1,6 @@
 package bsu.rfe.java.group10.lab6.Yaroshevich.varC2;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -16,6 +14,7 @@ public class Field  extends JPanel {
     private ArrayList<BouncingBall> balls = new ArrayList<BouncingBall>(8);
     // Флаг приостановления движения
     private boolean paused;
+    private boolean intersection = false;
     // Класс таймер отвечает за регулярную генерацию события типа ActionListener
 
     private Timer repaintTimer = new Timer(10, new ActionListener() {
@@ -27,7 +26,7 @@ public class Field  extends JPanel {
 
     public Field(){
         setBackground(Color.WHITE);
-        for(int i=0;i<5;i++) addBall();
+        //for(int i=0;i<5;i++) addBall();
         repaintTimer.start();
     }
 
@@ -62,5 +61,33 @@ public class Field  extends JPanel {
     public synchronized  void resume(){
         paused = false;
         notifyAll();
+    }
+    public synchronized Point intersectionSpeed(BouncingBall ball1) throws InterruptedException{
+        int indexOfCurrentBall = balls.indexOf(ball1);
+        Point speed = new Point(0,0);
+        for(int i =0;i<balls.size();i++){
+            if(i==indexOfCurrentBall) continue;
+            BouncingBall ball2= balls.get(i);
+            double length = Math.sqrt(Math.pow(ball1.getX()-ball2.getX(),2)+Math.pow(ball1.getY()-ball2.getY(),2));
+            if( ball1.getRadius()+ball2.getRadius() >= length){
+                double kof=((ball1.getX()-ball2.getX())*(ball2.getSpeed()*ball2.getSpeedX() - ball1.getSpeed()*ball1.getSpeedX())
+                        +(ball1.getY()-ball2.getY())*(ball2.getSpeed()*ball2.getSpeedY() - ball1.getSpeed()*ball1.getSpeedY()))
+                        *(2*Math.pow(ball2.getRadius(),2))/(Math.pow(ball1.getRadius(),2)+Math.pow(ball2.getRadius(),2))
+                        /Math.pow(ball1.getRadius()+ball2.getRadius(),2);
+                double speedX = (ball1.getX()-ball2.getX())*kof+ball1.getSpeed()*ball1.getSpeedX();
+                double speedY = (ball1.getY()-ball2.getY())*kof+ball1.getSpeed()*ball1.getSpeedY();
+                speed.setLocation(speedX,speedY);
+                intersection=!intersection;
+                if(!intersection){
+                    ball2.getThisThread().setPriority(Thread.MAX_PRIORITY);
+                    wait();
+                }else{
+                    ball1.getThisThread().setPriority(Thread.NORM_PRIORITY);
+                    notifyAll();
+                }
+                break;
+            }
+        }
+        return speed;
     }
 }

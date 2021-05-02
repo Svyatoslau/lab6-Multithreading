@@ -1,7 +1,6 @@
 package bsu.rfe.java.group10.lab6.Yaroshevich.varC2;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 public class BouncingBall implements Runnable {
@@ -20,10 +19,40 @@ public class BouncingBall implements Runnable {
     private double x;
     private double y;
 
+    // текущий поток
+    private Thread thisThread = new Thread(this);
     // Скорость и её компоненты
     private int speed;
     private double speedX;
     private double speedY;
+
+    public double getSpeedX() {
+        return speedX;
+    }
+
+    public double getSpeedY() {
+        return speedY;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public Thread getThisThread() {
+        return thisThread;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
 
     public BouncingBall(Field field){
         this.field = field;
@@ -43,7 +72,6 @@ public class BouncingBall implements Runnable {
         y = Math.random()*(field.getSize().getHeight() - 2*radius) + radius;
         // Созаём новый экземпляр потока, передавая аргументом ссылку на класс,
         // реализующий Runnable (т.е. на себя)
-        Thread thisThread = new Thread(this);
         thisThread.start();
     }
 
@@ -66,6 +94,14 @@ public class BouncingBall implements Runnable {
                 // Если движении разрешено - управление будет возвращено
                 // В противном случае - активный поток заснёт
                 field.canMove(this);
+                Point speedV = new Point(field.intersectionSpeed(this));
+                if(speedV.getX()!=0 && speedV.getY()!=0){
+                    double gipot = Math.sqrt(Math.pow(speedV.getX(),2)+Math.pow(speedV.getY(),2));
+                    speedX=3*speedV.getX()/gipot;
+                    speedY=3*speedV.getY()/gipot;
+                    speed=(int)Math.sqrt(Math.pow(speedV.getX()/speedX,2)+Math.pow(speedV.getY()/speedY,2)/2);
+                }
+                if(speed>15) speed=15;
                 if(x + speedX <= radius){
                     // Достигли левой стенки, отскакиваем в право
                     speedX = -speedX;
@@ -82,12 +118,12 @@ public class BouncingBall implements Runnable {
                     // Достигли нижней стенки
                     speedY = - speedY;
                     y = new Double(field.getHeight()-radius).intValue();
-                }else{
-                    x+= speedX;
-                    y+= speedY;
+                }else {
+                    x += speedX;
+                    y += speedY;
                 }
                 // Засыпаем взависимости от нашей скорости
-                Thread.sleep(16-speed);
+                thisThread.sleep(16-speed);
 
             }
         }catch (InterruptedException ex){
