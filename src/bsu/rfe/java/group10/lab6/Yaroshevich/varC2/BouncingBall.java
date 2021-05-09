@@ -15,13 +15,22 @@ public class BouncingBall implements Runnable {
     private Field field;
     private int radius;
     private Color color;
-    float time =  new Date().getTime()%1000000;
+    float time =  new Date().getTime()%10000000;
     // текущие координаты мяча
     private double x;
     private double y;
 
     // текущий поток
     private Thread thisThread = new Thread(this);
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
     // Скорость и её компоненты
     private int speed;
     private double speedX;
@@ -98,21 +107,21 @@ public class BouncingBall implements Runnable {
 
                 Point speedV = new Point(field.intersectionSpeed(this));
                 boolean flag =false;
-                System.out.println(new Date().getTime()%1000000 - time);
-                if(speedV.getX()!=0 && speedV.getY()!=0 && new Date().getTime()%1000000 - time>500){
+                System.out.println(new Date().getTime()%10000000 - time);
+                if(speedV.getX()!=0 && speedV.getY()!=0 ){
                     double gipot = Math.sqrt(Math.pow(speedV.getX(),2)+Math.pow(speedV.getY(),2));
                     double cos = speedV.getX()/gipot;
                     double sin = speedV.getY()/gipot;
-                    if(Math.abs(cos)>0.8) cos = 0.8;
-                    if(Math.abs(sin)<0.2) sin =0.2;
+                    if(Math.abs(cos)>0.9) cos = 0.9;
+                    if(Math.abs(sin)<0.1) sin =0.1;
                     speedX=3*cos;
                     speedY=3*sin;
                     speed=(int)Math.sqrt(Math.pow(speedV.getX()/speedX,2)+Math.pow(speedV.getY()/speedY,2)/2);
                     flag=true;
-                    System.out.println(time-new Date().getTime()%100000);
-                    time=new Date().getTime()%100000;
+                    System.out.println(time-new Date().getTime()%1000000);
+                    time=new Date().getTime()%10000000;
                 }
-                if(speed>15) speed=15;
+                if(speed>15) speed=10;
                 if(x + speedX <= radius){
                     // Достигли левой стенки, отскакиваем в право
                     speedX = -speedX;

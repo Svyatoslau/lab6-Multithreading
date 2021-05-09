@@ -80,13 +80,22 @@ public class Field  extends JPanel {
                 intersection=!intersection;
                 if(!intersection){
                     ball2.getThisThread().setPriority(Thread.MAX_PRIORITY);
+                    intersection=true;
                     wait();
                 }else{
                     ball1.getThisThread().setPriority(Thread.NORM_PRIORITY);
                     notifyAll();
                 }
+
                 break;
             }
+            if( length <=ball1.getRadius()+ball2.getRadius() -6){
+                if(ball1.getX()-ball2.getX()>0) ball1.setX(ball1.getX()+10);
+                else ball1.setX(ball1.getX()-10);
+                if(ball1.getY()-ball2.getY()>0) ball1.setY(ball1.getY()+10);
+                else ball1.setY(ball1.getY()-10);
+            }
+
         }
         return speed;
     }
